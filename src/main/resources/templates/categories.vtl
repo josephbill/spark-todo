@@ -1,0 +1,17 @@
+<h2>Category list</h2>
+
+#if ($categories.isEmpty())
+
+  <p>No categories.</p>
+
+#else
+
+  <ul>
+    #foreach ($category in $categories)
+      <li><a href="/categories/$category.getId()">$category.getName()</a></li>
+    #end
+  </ul>
+
+#end
+
+<p><a href="/categories/new" class="btn btn-primary">Add new category</a></p>

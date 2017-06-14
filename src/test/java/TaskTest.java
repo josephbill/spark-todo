@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 
 public class TaskTest {
 
+    @Before
+    public void clean_start() {
+        Task.clear();
+    }
+
     @Test
     public void Task_instantiatesCorrectly() {
         Task t = new Task("Mow the lawn");
@@ -47,7 +52,6 @@ public class TaskTest {
 
     @Test
     public void tasks_are_created_with_IDs() {
-        Task.clear();
         Task t1 = new Task("Mow the lawn");
         assertEquals(1, t1.getId());
         Task t2 = new Task("Buy groceries");

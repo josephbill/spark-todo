@@ -1,0 +1,24 @@
+#if ($category)
+
+  <h2>$category.getName()</h2>
+
+  #if ($category.getTasks().isEmpty())
+    <p>No tasks.</p>
+  #else
+    <ul>
+      #foreach ($task in $category.getTasks())
+        <li>$task.getDescription()</li>
+      #end
+    </ul>
+  #end
+
+#else
+
+  <p><em>Oops! We can't seem to find that category!</em></p>
+
+#end
+
+<p>
+  <a href="/categories" class="btn btn-primary">View all categories</a>
+  <a href="/categories/$category.getId()/tasks/new" class="btn btn-primary">Add new task</a>
+</p>

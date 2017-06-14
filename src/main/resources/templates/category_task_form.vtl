@@ -1,4 +1,4 @@
-<h2>Add new task</h2>
+<h2>Add new task <small>for "$category.getName()"</small></h2>
 
 <form action="/tasks" method="post">
 
@@ -8,7 +8,8 @@
   </div>
 
   <div class="form-action">
-    <button type="submit" class="btn btn-outline-primary">Add task</button>
+    <input type="hidden" name="category_id" value="$category.getId()">
+    <button type="submit" class="btn btn-success">Add task</button>
   </div>
 
 </form>

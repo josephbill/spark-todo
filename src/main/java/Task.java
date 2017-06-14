@@ -12,6 +12,7 @@ public class Task {
     private static List<Task> sInstances = new ArrayList<Task>();
 
     // constructor
+
     public Task(String description) {
         mDescription = description;
         mCompleted = false;
@@ -20,6 +21,8 @@ public class Task {
         sInstances.add(this);
         mId = sInstances.size();
     }
+
+    // public methods
 
     public int getId() {
         return mId;
@@ -37,6 +40,8 @@ public class Task {
         return mCreatedAt;
     }
 
+    // static methods
+
     public static List<Task> all() {
         return sInstances;
     }
@@ -46,6 +51,10 @@ public class Task {
     }
 
     public static Task find(int id) {
-        return sInstances.get(id-1);
+        try {
+            return sInstances.get(id-1);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 }
