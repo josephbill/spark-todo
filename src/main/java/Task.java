@@ -1,60 +1,79 @@
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import org.sql2o.*;
+
 
 public class Task {
 
-    private int mId;
-    private String mDescription;
-    private boolean mCompleted;
-    private LocalDateTime mCreatedAt;
-
-    private static List<Task> sInstances = new ArrayList<Task>();
+    private int id;
+    private String description;
+    private boolean completed;
+    private LocalDateTime createdAt;
 
     // constructor
 
     public Task(String description) {
-        mDescription = description;
-        mCompleted = false;
-        mCreatedAt = LocalDateTime.now();
-
-        sInstances.add(this);
-        mId = sInstances.size();
+        this.description = description;
+        this.completed = false;
+        this.createdAt = LocalDateTime.now();
     }
 
     // public methods
 
     public int getId() {
-        return mId;
+        return this.id;
     }
 
     public String getDescription() {
-        return mDescription;
+        return this.description;
     }
 
     public boolean isCompleted() {
-        return mCompleted;
+        return this.completed;
     }
 
     public LocalDateTime getCreatedAt() {
-        return mCreatedAt;
+        return this.createdAt;
+    }
+
+    @Override
+    public boolean equals(Object otherTask) {
+        if (!(otherTask instanceof Task)) {
+            return false;
+        } else {
+            Task newTask = (Task) otherTask;
+            return this.description.equals(newTask.getDescription()) &&
+                    this.id == newTask.getId();
+        }
+    }
+
+    public void save() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "INSERT INTO tasks (description) VALUES (:description)";
+            this.id = (int) con.createQuery(sql, true)
+                                .addParameter("description", this.description)
+                                .executeUpdate()
+                                .getKey();
+        }
     }
 
     // static methods
 
     public static List<Task> all() {
-        return sInstances;
-    }
-
-    public static void clear() {
-        sInstances.clear();
+        String sql = "SELECT id, description FROM tasks";
+        try (Connection con = DB.sql2o.open()) {
+            return con.createQuery(sql).executeAndFetch(Task.class);
+        }
     }
 
     public static Task find(int id) {
-        try {
-            return sInstances.get(id-1);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM tasks WHERE id=:id";
+            Task task = con.createQuery(sql)
+                .addParameter("id", id)
+                .executeAndFetchFirst(Task.class);
+            return task;
         }
     }
 }
