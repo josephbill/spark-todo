@@ -1,0 +1,17 @@
+<h2>Task list</h2>
+
+#if ($tasks.isEmpty())
+
+  <p>No tasks.</p>
+
+#else
+
+  <ul>
+    #foreach ($task in $tasks)
+      <li><a href="/tasks/$task.getId()">$task.getDescription()</a></li>
+    #end
+  </ul>
+
+#end
+
+<p><a href="/tasks/new" class="btn btn-outline-primary">Add new task</a></p>

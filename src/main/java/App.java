@@ -1,6 +1,5 @@
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
@@ -15,30 +14,51 @@ public class App {
         staticFileLocation("/public");
         String layout = "templates/layout.vtl";
 
+        // Home
         get("/", (request, response) -> {
-            Map<String,Object> context = new HashMap<String,Object>();
-            context.put("template", "templates/index.vtl");
-            context.put("tasks", request.session().attribute("tasks"));
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/index.vtl");
 
-            return new ModelAndView(context, layout);
+            return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
-        post("/", (request, response) -> {
-            ArrayList<Task> tasks = request.session().attribute("tasks");
-            if (tasks == null) {
-                tasks = new ArrayList<Task>();
-                request.session().attribute("tasks", tasks);
-            }
+        // List tasks
+        get("/tasks", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/tasks.vtl");
+            model.put("tasks", Task.all());
 
-            String description = request.queryParams("description");
-            Task newTask = new Task(description);
-            tasks.add(newTask);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
 
-            Map<String,Object> context = new HashMap<String,Object>();
-            context.put("template", "templates/index.vtl");
-            context.put("tasks", request.session().attribute("tasks"));
+        // New task
+        get("/tasks/new", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/task_form.vtl");
 
-            return new ModelAndView(context, layout);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // New task submit
+        post("/tasks", (request, response) -> {
+            Task newTask = new Task(request.queryParams("description"));
+
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/success.vtl");
+            model.put("task", newTask);
+
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // Task detail page
+        get("/tasks/:id", (request, response) -> {
+            Task task = Task.find(Integer.parseInt(request.params(":id")));
+
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/task.vtl");
+            model.put("task", task);
+
+            return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
     }
 }
