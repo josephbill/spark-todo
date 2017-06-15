@@ -10,6 +10,7 @@ public class Task {
     private String description;
     private boolean completed;
     private LocalDateTime createdAt;
+    private int categoryId;
 
     // constructor
 
@@ -17,6 +18,28 @@ public class Task {
         this.description = description;
         this.completed = false;
         this.createdAt = LocalDateTime.now();
+        this.categoryId = 1;
+    }
+
+    public Task(String description, int categoryId) {
+        this.description = description;
+        this.completed = false;
+        this.createdAt = LocalDateTime.now();
+        this.categoryId = categoryId;
+    }
+
+    // operators
+
+    @Override
+    public boolean equals(Object otherTask) {
+        if (!(otherTask instanceof Task)) {
+            return false;
+        } else {
+            Task newTask = (Task) otherTask;
+            return this.description.equals(newTask.getDescription()) &&
+                    this.id == newTask.getId() &&
+                    this.categoryId == newTask.getCategoryId();
+        }
     }
 
     // public methods
@@ -37,22 +60,16 @@ public class Task {
         return this.createdAt;
     }
 
-    @Override
-    public boolean equals(Object otherTask) {
-        if (!(otherTask instanceof Task)) {
-            return false;
-        } else {
-            Task newTask = (Task) otherTask;
-            return this.description.equals(newTask.getDescription()) &&
-                    this.id == newTask.getId();
-        }
+    public int getCategoryId() {
+        return this.categoryId;
     }
 
     public void save() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "INSERT INTO tasks (description) VALUES (:description)";
+            String sql = "INSERT INTO tasks (description, categoryId) VALUES (:description, :categoryId)";
             this.id = (int) con.createQuery(sql, true)
                                 .addParameter("description", this.description)
+                                .addParameter("categoryId", this.categoryId)
                                 .executeUpdate()
                                 .getKey();
         }
@@ -61,7 +78,7 @@ public class Task {
     // static methods
 
     public static List<Task> all() {
-        String sql = "SELECT id, description FROM tasks";
+        String sql = "SELECT id, description, categoryId FROM tasks";
         try (Connection con = DB.sql2o.open()) {
             return con.createQuery(sql).executeAndFetch(Task.class);
         }

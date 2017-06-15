@@ -1,57 +1,76 @@
 import java.util.List;
 import java.util.ArrayList;
+import org.sql2o.*;
 
 
 public class Category {
 
-    private int mId;
-    private String mName;
-    private List<Task> mTasks;
-
-    private static List<Category> sInstances = new ArrayList<Category>();
+    private int id;
+    private String name;
 
     // Constructor
 
     public Category(String name) {
-        mName = name;
-        sInstances.add(this);
-        mId = sInstances.size();
-        mTasks = new ArrayList<Task>();
+        this.name = name;
+    }
+
+    // Operators
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Category) {
+            Category otherCategory = (Category) other;
+            return this.name.equals(otherCategory.getName()) &&
+                this.id == otherCategory.getId();
+        } else {
+            return false;
+        }
     }
 
     // Public methods
 
     public int getId() {
-        return mId;
+        return this.id;
     }
 
     public String getName() {
-        return mName;
+        return this.name;
     }
 
     public List<Task> getTasks() {
-        return mTasks;
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM tasks WHERE categoryId=:cid";
+            return con.createQuery(sql)
+                    .addParameter("cid", this.id)
+                    .executeAndFetch(Task.class);
+        }
     }
 
-    public void addTask(Task task) {
-        mTasks.add(task);
+    public void save() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "INSERT INTO categories (name) VALUES (:name)";
+            this.id = (int) con.createQuery(sql, true)
+                                .addParameter("name", this.name)
+                                .executeUpdate()
+                                .getKey();
+        }
     }
 
     // Static methods
 
     public static List<Category> all() {
-        return sInstances;
-    }
-
-    public static void clear() {
-        sInstances.clear();
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT id, name FROM categories";
+            return con.createQuery(sql).executeAndFetch(Category.class);
+        }
     }
 
     public static Category find(int id) {
-        try {
-            return sInstances.get(id-1);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT id, name FROM categories WHERE id=:id";
+            return con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Category.class);
         }
     }
 }

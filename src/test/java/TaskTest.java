@@ -16,6 +16,8 @@ public class TaskTest {
         try (Connection con = DB.sql2o.open()) {
             String sql = "DELETE FROM tasks *;";
             con.createQuery(sql).executeUpdate();
+            sql = "DELETE FROM categories *;";
+            con.createQuery(sql).executeUpdate();
         }
     }
 
@@ -101,5 +103,14 @@ public class TaskTest {
         t.save();
         Task savedTask = Task.all().get(0);
         assertEquals(t.getId(), savedTask.getId());
+    }
+
+    @Test
+    public void get_category_id() {
+        Category c = new Category("Home");
+        c.save();
+        Task t = new Task("Mow the lawn", c.getId());
+        t.save();
+        assertEquals(t.getCategoryId(), c.getId());
     }
 }
