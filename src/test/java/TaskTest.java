@@ -55,23 +55,14 @@ public class TaskTest {
         assertEquals(true, Task.all().contains(t2));
     }
 
-    // @Test
-    // public void clear_all_tasks() {
-    //     Task t1 = new Task("Mow the lawn");
-    //     Task t2 = new Task("Buy groceries");
-    //     Task.clear();
-    //     assertEquals(0, Task.all().size());
-    // }
-
-    // @Test
-    // public void tasks_are_created_with_IDs() {
-    //     Task t1 = new Task("Mow the lawn");
-    //     t1.save();
-    //     assertEquals(1, t1.getId());
-    //     Task t2 = new Task("Buy groceries");
-    //     t2.save();
-    //     assertEquals(2, t2.getId());
-    // }
+    @Test
+    public void tasks_are_created_with_IDs() {
+        Task t1 = new Task("Mow the lawn");
+        t1.save();
+        Task t2 = new Task("Buy groceries");
+        t2.save();
+        assertTrue(t1.getId() != t2.getId());
+    }
 
     @Test
     public void find_Task_with_ID() {
@@ -112,5 +103,22 @@ public class TaskTest {
         Task t = new Task("Mow the lawn", c.getId());
         t.save();
         assertEquals(t.getCategoryId(), c.getId());
+    }
+
+    @Test
+    public void update_descrition() {
+        Task t = new Task("Mow the lawn");
+        t.save();
+        t.update("Take a nap");
+        assertEquals(Task.find(t.getId()).getDescription(), "Take a nap");
+    }
+
+    @Test
+    public void delete_task_from_db() {
+        Task t = new Task("Mow the lawn");
+        t.save();
+        int id = t.getId();
+        t.delete();
+        assertEquals(Task.find(id), null);
     }
 }

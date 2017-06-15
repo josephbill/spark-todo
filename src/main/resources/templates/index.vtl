@@ -1,6 +1,43 @@
-<h2>Welcome to the <strong>To-do List</strong> application</h2>
+<h1>To-do list</h1>
 
-<p>
-  <a href="/categories" class="btn btn-outline-primary">View category list</a>
-  <a href="/categories/new" class="btn btn-outline-primary">Add new category</a>
-</p>
+<!-- List of categories -->
+#if ($categories.isEmpty())
+  <p>There are no categories yet.</p>
+#else
+  <p>Click on a category to see its tasks.</p>
+  <ul>
+    #foreach ($c in $categories)
+      <li><a href="/categories/$c.getId()">$c.getName()</a></li>
+    #end
+  </ul>
+#end
+
+<!-- New category form -->
+<hr>
+<h2>New category?</h2>
+<form action="/categories" method="post">
+  <div class="input-group">
+    <input type="text" name="name" class="form-control" placeholder="Category name">
+    <span class="input-group-btn">
+      <button type="submit" class="btn btn-success">Add Category</button>
+    </span>
+  </div>
+</form>
+
+<!-- New task form -->
+<hr>
+<h2>New task?</h2>
+<form action="/tasks" method="post">
+  <div class="input-group">
+    <input type="text" name="description" class="form-control" placeholder="Task description">
+    <select name="categoryId" class="form-control">
+      <option value="" disabled selected>Select a category</option>
+      #foreach ($c in $categories)
+        <option value="$c.getId()">$c.getName()</option>
+      #end
+    </select>
+    <span class="input-group-btn">
+      <button type="submit" class="btn btn-success">Add Task</button>
+    </span>
+  </div><!--/input-group-->
+</form>

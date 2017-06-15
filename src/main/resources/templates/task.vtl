@@ -1,8 +1,26 @@
-<h2>$task.getDescription()</h2>
+<h1>$task.getDescription()</h1>
+<h3>Completed = $task.isCompleted()</h3>
+<h3>Category = $category.getName()</h3>
 
-<h3>Completed: $task.isCompleted()</h3>
+<hr>
+
+<h4>Edit task:</h4>
+<form action="/categories/$category.getId()/tasks/$task.getId()" method="post">
+  <div class="input-group">
+    <input type="text" name="description" class="form-control" placeholder="New description">
+    <span class="input-group-btn">
+      <button type="submit" class="btn btn-info">Update Task</button>
+    </span>
+  </div><!--/input-group-->
+</form>
+
+<h4>Delete task?</h4>
+<form action="/categories/$category.getId()/tasks/$task.getId()/delete" method="post">
+  <button type="submit" class="btn btn-danger">Delete!</button>
+</form>
+
+<hr>
 
 <p>
-  <a href="/tasks" class="btn btn-primary">View all tasks</a>
-  <a href="/tasks/new" class="btn btn-primary">Add new task</a>
+  <a href="/categories/$category.getId()" class="btn btn-secondary">Return to $category.getName()</a>
 </p>

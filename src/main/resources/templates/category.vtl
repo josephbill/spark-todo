@@ -7,7 +7,7 @@
   #else
     <ul>
       #foreach ($task in $category.getTasks())
-        <li>$task.getDescription()</li>
+        <li><a href="/categories/$category.getId()/tasks/$task.getId()">$task.getDescription()</a></li>
       #end
     </ul>
   #end
