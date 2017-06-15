@@ -114,8 +114,12 @@ public class CategoryTest {
     public void delete_category_from_db() {
         Category c = new Category("Home");
         c.save();
-        int id = c.getId();
+        int cid = c.getId();
+        Task t = new Task("Task 1", cid);
+        t.save();
+        int tid = t.getId();
         c.delete();
-        assertEquals(Category.find(id), null);
+        assertEquals(Category.find(cid), null);
+        assertEquals(Task.find(tid), null);
     }
 }

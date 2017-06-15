@@ -129,9 +129,6 @@ public class App {
         // Category delete submit
         post("/categories/:cid/delete", (request, response) -> {
             Category c = Category.find(Integer.parseInt(request.params(":cid")));
-            for (Task t : c.getTasks()) {
-                t.delete();
-            }
             c.delete();
 
             response.redirect("/");

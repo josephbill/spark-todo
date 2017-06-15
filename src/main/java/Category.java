@@ -58,7 +58,13 @@ public class Category {
 
     public void delete() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM categories WHERE id=:id";
+            // First delete the associated tasks
+            String sql = "DELETE FROM tasks WHERE categoryId=:id";
+            con.createQuery(sql)
+                .addParameter("id", this.id)
+                .executeUpdate();
+            // Now delete the category
+            sql = "DELETE FROM categories WHERE id=:id";
             con.createQuery(sql)
                 .addParameter("id", this.id)
                 .executeUpdate();
