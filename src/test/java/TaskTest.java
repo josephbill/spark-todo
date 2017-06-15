@@ -6,21 +6,9 @@ import org.sql2o.*;
 
 public class TaskTest {
 
-    @Before
-    public void setup() {
-        DB.sql2o = new Sql2o("jdbc:postgresql://localhost:5432/todo_test", null, null);
-    }
-
-    @After
-    public void tearDown() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM tasks *;";
-            con.createQuery(sql).executeUpdate();
-            sql = "DELETE FROM categories *;";
-            con.createQuery(sql).executeUpdate();
-        }
-    }
-
+    @Rule
+    public DatabaseRule database = new DatabaseRule();
+    
     @Test
     public void Task_instantiatesCorrectly() {
         Task t = new Task("Mow the lawn");
