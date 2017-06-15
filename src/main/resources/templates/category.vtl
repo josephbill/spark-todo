@@ -1,5 +1,4 @@
 #if ($category)
-
   <h2>$category.getName()</h2>
 
   #if ($category.getTasks().isEmpty())
@@ -12,10 +11,12 @@
     </ul>
   #end
 
+  <h4>Delete category? <small>This will delete all tasks in this category!</small></h4>
+  <form action="/categories/$category.getId()/delete" method="post">
+    <button type="submit" class="btn btn-danger">Delete class!</button>
+  </form>
 #else
-
   <p><em>Oops! We can't seem to find that category!</em></p>
-
 #end
 
 <p>

@@ -45,10 +45,9 @@ public class App {
             Category newCategory = new Category(request.queryParams("name"));
             newCategory.save();
 
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/category_success.vtl");
-            model.put("category", newCategory);
+            response.redirect("/");
 
+            Map<String,Object> model = new HashMap<String,Object>();
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
@@ -80,11 +79,10 @@ public class App {
             Task t = new Task(request.queryParams("description"), c.getId());
             t.save();
 
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/category_task_success.vtl");
-            model.put("task", t);
-            model.put("category", c);
+            String url = String.format("/categories/%d", c.getId());
+            response.redirect(url);
 
+            Map<String,Object> model = new HashMap<String,Object>();
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
@@ -123,6 +121,20 @@ public class App {
 
             String url = String.format("/categories/%d", c.getId());
             response.redirect(url);
+
+            Map<String,Object> model = new HashMap<String,Object>();
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // Category delete submit
+        post("/categories/:cid/delete", (request, response) -> {
+            Category c = Category.find(Integer.parseInt(request.params(":cid")));
+            for (Task t : c.getTasks()) {
+                t.delete();
+            }
+            c.delete();
+
+            response.redirect("/");
 
             Map<String,Object> model = new HashMap<String,Object>();
             return new ModelAndView(model, layout);

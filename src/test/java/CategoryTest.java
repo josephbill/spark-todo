@@ -109,4 +109,13 @@ public class CategoryTest {
         Task[] tasks = new Task[] {t1, t2};
         assertTrue(c.getTasks().containsAll(Arrays.asList(tasks)));
     }
+
+    @Test
+    public void delete_category_from_db() {
+        Category c = new Category("Home");
+        c.save();
+        int id = c.getId();
+        c.delete();
+        assertEquals(Category.find(id), null);
+    }
 }

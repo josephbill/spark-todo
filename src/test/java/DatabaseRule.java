@@ -6,7 +6,7 @@ public class DatabaseRule extends ExternalResource {
 
     @Override
     protected void before() {
-        DB.sql2o = new Sql2o("jdbc:postgresql://localhost:5432/todo", null, null);
+        DB.sql2o = new Sql2o("jdbc:postgresql://localhost:5432/todo_test", null, null);
     }
 
     @Override
